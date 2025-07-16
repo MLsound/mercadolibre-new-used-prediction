@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.jsonlines
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# OS files
+.DS_Store

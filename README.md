@@ -1,0 +1,92 @@
+# Opportunities@MeLi - Code Exercise - Data Scientist
+## Mercado Libre New/Used Item Prediction
+
+This repository contains a machine learning solution to predict whether an item listed on Mercado Libre's Marketplace is **new** or **used**. The goal is to achieve a minimum accuracy of **0.86** on held-out test data.
+
+---
+
+## 1. Project Overview
+
+Mercado Libre, a prominent e-commerce platform in Latin America, requires an algorithm to accurately classify item conditions. This project addresses that need by developing a machine learning model to distinguish between "new" and "used" items based on provided data.
+
+---
+
+## 2. Dataset
+
+The dataset used for this project is `MLA_100k_checked_v3.jsonlines`. A helper function `build_dataset` in `new_or_used.py` is provided to facilitate reading and processing this data.
+
+---
+
+## 3. Deliverables
+
+### 3.1. Code
+
+The core of the solution lies in the scripts and/or runnable notebooks that define, train, and evaluate the machine learning model. These files are designed for reproducibility and legibility, adhering to collaborative development best practices.
+
+* **`main.py`** (or similar, e.g., `model_training.ipynb`): Contains the primary code for:
+    * Data loading and preprocessing.
+    * Feature engineering.
+    * Model definition and training.
+    * Model evaluation on the test set.
+
+---
+
+### 3.2. Documentation
+
+A comprehensive document explaining the methodology, choices, and results.
+
+* **`documentation.md`** (or `documentation.pdf`):
+    * **Feature Selection Criteria**: Detailed explanation of the features chosen for the model and the rationale behind their selection.
+    * **Secondary Metric**:
+        * Identification of an appropriate secondary evaluation metric.
+        * Justification for choosing this metric, highlighting its relevance to the problem.
+        * Performance achieved on this secondary metric.
+    * **(Optional) EDA Analysis**: An exploratory data analysis (EDA) can be provided in an alternative format (e.g., `eda.ipynb`) to further illustrate data insights.
+
+---
+
+## 4. Getting Started
+
+### 4.1. Prerequisites
+
+To run this project, ensure you have the following installed:
+
+* Python 3.x
+* `pip` (Python package installer)
+
+---
+
+### 4.2. Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone [https://github.com/MLsound/mercadolibre-new-used-prediction.git](https://github.com/MLsound/mercadolibre-new-used-prediction.git)
+    cd mercadolibre-new-used-prediction
+    ```
+
+2.  **Install dependencies:**
+
+    It is highly recommended to use a virtual environment.
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    pip install -r requirements.txt
+    ```
+    
+---
+
+5. Project Structure
+.
+├── MLA_100k_checked_v3.jsonlines  # The raw dataset.
+├── new_or_used.py                 # Contains the build_dataset function.
+├── main.py                        # Main script for data processing, modeling, and evaluation.
+├── requirements.txt               # Lists all Python dependencies.
+├── report.md                      # Explains feature choices, secondary metric, and performance.
+└── README.md                      # This file.
+
+---
+
+6. License
+This project is licensed under the MIT License - see the LICENSE file for details.
