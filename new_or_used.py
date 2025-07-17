@@ -36,7 +36,7 @@ def build_dataset():
     y_train = [target(x) for x in X_train]
     y_test = [target(x) for x in X_test]
     for x in X_test:
-        del x["condition"]
+        del x["condition"] # Should also be removed for X_train, FIX NEEDED
     return X_train, y_train, X_test, y_test
 
 
