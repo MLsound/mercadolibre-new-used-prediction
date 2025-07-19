@@ -28,7 +28,7 @@ import json
 
 # You can safely assume that `build_dataset` is correctly implemented
 def build_dataset():
-    data = [json.loads(x) for x in open("MLA_100k_checked_v3.jsonlines")]
+    data = [json.loads(x) for x in open("data/MLA_100k_checked_v3.jsonlines")]
     target = lambda x: x.get("condition")
     N = -10000
     X_train = data[:N]
