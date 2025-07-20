@@ -164,9 +164,16 @@ def load_processed_data():
     features_test = X_test_transformed_df[features].copy()
     target_test = y_test_df.copy()
 
+    # 8. Encoded target ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # String classes will be replaced by integers as a good performance practice
+    # classes = {1: 'new', 0: 'used'} # tags for human readabilty
+    target_train_encoded = (target_train == 'new').astype(int)
+    target_test_encoded = (target_test == 'new').astype(int)
+
     print("Succesfully finished.\n")
 
-    return features_train, target_train, features_test, target_test
+    #return features_train, target_train, features_test, target_test
+    return features_train, target_train_encoded, features_test, target_test_encoded
 
 
 
