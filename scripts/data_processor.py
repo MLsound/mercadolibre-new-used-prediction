@@ -139,7 +139,7 @@ def load_processed_data():
         X_test_df[col] = X_test_df[col].dropna().astype('uint8')
 
     # 5. One-hot Encoding (dummy variables) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    categorical_features = ['listing_type_id', 'buying_mode', 'status']
+    categorical_features = ['listing_type_id', 'buying_mode'] # 'status' no longer used
     encoder = OneHotEncoder(handle_unknown='ignore', sparse_output=False, drop='first') # Initialize OneHotEncoder
     encoded_train_data = encoder.fit_transform(X_train_df[categorical_features]) # Fit and transform for train split
     encoded_feature_names = encoder.get_feature_names_out(categorical_features) # Get features names
@@ -150,14 +150,23 @@ def load_processed_data():
     X_test_transformed_df = pd.concat([X_test_df.drop(columns=categorical_features), encoded_features_test], axis=1)
 
     # 6. Synthetic data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    # 2️⃣ Second model trained
+    X_train_transformed_df['free_tier'] = X_train_transformed_df['listing_type_id_free'] == True
+    X_test_transformed_df['free_tier'] = X_test_transformed_df['listing_type_id_free'] == True
+    
     # 7. Feature selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # 1️⃣ First model trained
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
+    #     'initial_quantity_scaled', 'is_USD', 'listing_type_id_free',
+    #     'listing_type_id_gold', 'listing_type_id_gold_premium',
+    #     'listing_type_id_gold_pro', 'listing_type_id_gold_special',
+    #     'listing_type_id_silver', 'buying_mode_buy_it_now',
+    #     'buying_mode_classified', 'status_not_yet_active', 'status_paused']
+
+    # 2️⃣ Second model trained (-50% features)
     features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
-        'initial_quantity_scaled', 'is_USD', 'listing_type_id_free',
-        'listing_type_id_gold', 'listing_type_id_gold_premium',
-        'listing_type_id_gold_pro', 'listing_type_id_gold_special',
-        'listing_type_id_silver', 'buying_mode_buy_it_now',
-        'buying_mode_classified', 'status_not_yet_active', 'status_paused']
+        'initial_quantity_scaled', 'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+        'buying_mode_classified']
 
     features_train = X_train_transformed_df[features].copy()
     target_train = y_train_df.copy()
