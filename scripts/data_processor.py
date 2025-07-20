@@ -92,7 +92,7 @@ def load_processed_data():
     X_test_df.reset_index(drop=True, inplace=True)
 
     # 3. Outliers handling ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    continuous_features = ['price', 'initial_quantity']
+    continuous_features = ['price'] # 'initial_quantity' removed for 6️⃣
 
     # Initialize the DataFrame that will store the cumulatively filtered data.
     X_train_outlier_df = X_train_df.copy()
@@ -173,10 +173,27 @@ def load_processed_data():
     X_train_transformed_df['is_working_hours'] = ((X_train_transformed_df['time_created'] >= 6) & (X_train_transformed_df['time_created'] <= 20)).astype(int)
     X_test_transformed_df['is_working_hours'] = ((X_test_transformed_df['time_created'] >= 6) & (X_test_transformed_df['time_created'] <= 20)).astype(int)
 
-    # Convert 'date_created' to datetime objects
-    # Create the 'time_created' (hour of the day) & 'day_of_week' (0=Monday, 6=Sunday) features
-    # Drop unnecesary columns
-    # Create 'is_weekend' & 'is_working_hours' features
+    # 6️⃣ Sixth model trained
+    # CATEGORICAL QUANTITY
+    def categorize_quantity(quantity_value):
+        if quantity_value == 1:
+            return 'single_unit'
+        elif 1 < quantity_value < 10:
+            return 'small'
+        else: # value >= 10
+            return 'large'
+
+    # Encode categories
+    X_train_transformed_df['quantity_category'] = X_train_transformed_df['initial_quantity'].apply(categorize_quantity)
+    X_test_transformed_df['quantity_category'] = X_test_transformed_df['initial_quantity'].apply(categorize_quantity)
+    # Apply one-hot encoding to the 'quantity_category' column
+    X_train_transformed_df = pd.get_dummies(X_train_transformed_df, columns=['quantity_category'], prefix='quant', drop_first=True)
+    X_test_transformed_df = pd.get_dummies(X_test_transformed_df, columns=['quantity_category'], prefix='quant', drop_first=True)
+    cat_quant = [x for x in X_train_transformed_df.columns.to_list() if x.startswith('quant')]
+
+    # Optional: for applying just 1 vs many categorization ('is_single_unit')
+    # X_train_transformed_df['is_single_unit'] = X_train_transformed_df['initial_quantity'] == 1
+    # X_test_transformed_df['is_single_unit'] = X_test_transformed_df['initial_quantity'] == 1
 
     # 7. Feature selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # 1️⃣ First model trained
@@ -193,9 +210,19 @@ def load_processed_data():
     #     'buying_mode_classified']
     
     # 3️⃣ Third model trained (datetime features)
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
+    #     'initial_quantity_scaled', 'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+    #     'buying_mode_classified','is_weekend','is_working_hours']
+
+    # 4️⃣ Fourth & 5️⃣ Fifth models trained (removing 'initial_quantity_scaled')
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
+    #     'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+    #     'buying_mode_classified','is_weekend','is_working_hours']
+
+    # 6️⃣ Sixth model trained (categorical 'initial_quantity')
     features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
-        'initial_quantity_scaled', 'is_USD', 'free_tier', 'buying_mode_buy_it_now',
-        'buying_mode_classified','is_weekend','is_working_hours']
+        'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+        'buying_mode_classified','is_weekend','is_working_hours'] + cat_quant  # 'is_single_unit'
 
     features_train = X_train_transformed_df[features].copy()
     target_train = y_train_df.copy()
