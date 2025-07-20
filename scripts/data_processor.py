@@ -114,8 +114,10 @@ def load_processed_data():
 
     # 5. Concatenate normalized data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     non_continuous_features = [col for col in X_train_df.columns if col not in continuous_features]
-    df_train_non_continuous = X_train_df[non_continuous_features] # Select these non-continuous features
-    df_test_non_continuous = X_test_df[non_continuous_features]
+    # df_train_non_continuous = X_train_df[non_continuous_features] # Select these non-continuous features
+    # df_test_non_continuous = X_test_df[non_continuous_features]
+    df_train_non_continuous = X_train_df.copy()
+    df_test_non_continuous = X_test_df.copy()
 
     X_train_scaled_df.drop(columns=non_continuous_features, inplace=True)  # Drop original continuous features
     X_test_scaled_df.drop(columns=non_continuous_features, inplace=True)  
@@ -190,10 +192,21 @@ def load_processed_data():
     X_train_transformed_df = pd.get_dummies(X_train_transformed_df, columns=['quantity_category'], prefix='quant', drop_first=True)
     X_test_transformed_df = pd.get_dummies(X_test_transformed_df, columns=['quantity_category'], prefix='quant', drop_first=True)
     cat_quant = [x for x in X_train_transformed_df.columns.to_list() if x.startswith('quant')]
-
     # Optional: for applying just 1 vs many categorization ('is_single_unit')
     # X_train_transformed_df['is_single_unit'] = X_train_transformed_df['initial_quantity'] == 1
     # X_test_transformed_df['is_single_unit'] = X_test_transformed_df['initial_quantity'] == 1
+    
+    # 7️⃣ Seventh model trained
+    # 'parent_item_id' -> 'has_paren_item'
+    X_train_transformed_df['has_parent_item'] = ~X_train_transformed_df['parent_item_id'].isnull()
+    X_test_transformed_df['has_parent_item'] = ~X_test_transformed_df['parent_item_id'].isnull()
+    # 'official_store_id' -> 'has_store'
+    X_train_transformed_df['has_store'] = ~X_train_transformed_df['official_store_id'].isnull()
+    X_test_transformed_df['has_store'] = ~X_test_transformed_df['official_store_id'].isnull()
+    # 'price' -> 'high_ticket'
+    q3_price = X_train_df['price'].quantile(0.75) # Use the 75th percentile (Q3) as threshold
+    X_train_transformed_df['high_ticket'] = X_train_transformed_df['price'] > q3_price
+    X_test_transformed_df['high_ticket'] = X_test_transformed_df['price'] > q3_price
 
     # 7. Feature selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # 1️⃣ First model trained
@@ -220,9 +233,15 @@ def load_processed_data():
     #     'buying_mode_classified','is_weekend','is_working_hours']
 
     # 6️⃣ Sixth model trained (categorical 'initial_quantity')
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
+    #     'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+    #     'buying_mode_classified','is_weekend','is_working_hours'] + cat_quant  # 'is_single_unit'
+    
+    # 7️⃣ Seventh model trained (synth features)
     features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
         'is_USD', 'free_tier', 'buying_mode_buy_it_now',
-        'buying_mode_classified','is_weekend','is_working_hours'] + cat_quant  # 'is_single_unit'
+        'buying_mode_classified','is_weekend','is_working_hours',
+        'has_parent_item','has_store','high_ticket'] + cat_quant  # 'is_single_unit'
 
     features_train = X_train_transformed_df[features].copy()
     target_train = y_train_df.copy()
@@ -238,7 +257,7 @@ def load_processed_data():
     print("Succesfully finished.\n")
 
     #return features_train, target_train, features_test, target_test
-    return features_train, target_train_encoded, features_test, target_test_encoded
+    return features_train, target_train, features_test, target_test
 
 
 
