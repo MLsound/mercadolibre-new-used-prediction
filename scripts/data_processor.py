@@ -153,7 +153,31 @@ def load_processed_data():
     # 2️⃣ Second model trained
     X_train_transformed_df['free_tier'] = X_train_transformed_df['listing_type_id_free'] == True
     X_test_transformed_df['free_tier'] = X_test_transformed_df['listing_type_id_free'] == True
-    
+
+    # 3️⃣ Third model trained
+    # TIME FEATURES
+    # Convert 'date_created' to datetime objects
+    X_train_transformed_df['date_created_dt'] = pd.to_datetime(X_train_transformed_df['date_created'])
+    X_test_transformed_df['date_created_dt'] = pd.to_datetime(X_test_transformed_df['date_created'])
+    # Create the 'time_created' (hour of the day) & 'day_of_week' (0=Monday, 6=Sunday) features
+    X_train_transformed_df['time_created'] = X_train_transformed_df['date_created_dt'].dt.hour
+    X_test_transformed_df['time_created'] = X_test_transformed_df['date_created_dt'].dt.hour
+    X_train_transformed_df['day_of_week'] = X_train_transformed_df['date_created_dt'].dt.dayofweek
+    X_test_transformed_df['day_of_week'] = X_test_transformed_df['date_created_dt'].dt.dayofweek
+    # Drop unnecesary columns
+    X_train_transformed_df = X_train_transformed_df.drop(columns=['date_created', 'date_created_dt'])
+    X_test_transformed_df = X_test_transformed_df.drop(columns=['date_created', 'date_created_dt'])
+    # Create 'is_weekend' & 'is_working_hours' features
+    X_train_transformed_df['is_weekend'] = X_train_transformed_df['day_of_week'].isin([5, 6]).astype(int)
+    X_test_transformed_df['is_weekend'] = X_test_transformed_df['day_of_week'].isin([5, 6]).astype(int)
+    X_train_transformed_df['is_working_hours'] = ((X_train_transformed_df['time_created'] >= 6) & (X_train_transformed_df['time_created'] <= 20)).astype(int)
+    X_test_transformed_df['is_working_hours'] = ((X_test_transformed_df['time_created'] >= 6) & (X_test_transformed_df['time_created'] <= 20)).astype(int)
+
+    # Convert 'date_created' to datetime objects
+    # Create the 'time_created' (hour of the day) & 'day_of_week' (0=Monday, 6=Sunday) features
+    # Drop unnecesary columns
+    # Create 'is_weekend' & 'is_working_hours' features
+
     # 7. Feature selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # 1️⃣ First model trained
     # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
@@ -164,9 +188,14 @@ def load_processed_data():
     #     'buying_mode_classified', 'status_not_yet_active', 'status_paused']
 
     # 2️⃣ Second model trained (-50% features)
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
+    #     'initial_quantity_scaled', 'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+    #     'buying_mode_classified']
+    
+    # 3️⃣ Third model trained (datetime features)
     features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
         'initial_quantity_scaled', 'is_USD', 'free_tier', 'buying_mode_buy_it_now',
-        'buying_mode_classified']
+        'buying_mode_classified','is_weekend','is_working_hours']
 
     features_train = X_train_transformed_df[features].copy()
     target_train = y_train_df.copy()
