@@ -35,13 +35,13 @@ The core of the solution lies in the scripts and/or runnable notebooks that defi
 
 A comprehensive document explaining the methodology, choices, and results.
 
-* **`documentation.md`** (or `documentation.pdf`):
+* **`report.pdf`**:
     * **Feature Selection Criteria**: Detailed explanation of the features chosen for the model and the rationale behind their selection.
     * **Secondary Metric**:
         * Identification of an appropriate secondary evaluation metric.
         * Justification for choosing this metric, highlighting its relevance to the problem.
         * Performance achieved on this secondary metric.
-    * **(Optional) EDA Analysis**: An exploratory data analysis (EDA) can be provided in an alternative format (e.g., `eda.ipynb`) to further illustrate data insights.
+    * **EDA Analysis**: An exploratory data analysis (EDA) can be provided in an alternative format (e.g., `eda.ipynb`) to further illustrate data insights.
 
 ---
 
@@ -79,12 +79,22 @@ To run this project, ensure you have the following installed:
 
 5. Project Structure
 .
-├── MLA_100k_checked_v3.jsonlines  # The raw dataset.
-├── new_or_used.py                 # Contains the build_dataset function.
-├── main.py                        # Main script for data processing, modeling, and evaluation.
-├── requirements.txt               # Lists all Python dependencies.
-├── report.md                      # Explains feature choices, secondary metric, and performance.
-└── README.md                      # This file.
+├── .venv/                         # Python virtual environment
+├── data/                          # Raw and processed datasets
+│   └── MLA_100k_checked_v3.jsonlines
+├── models/                        # Trained machine learning models
+├── scripts/                       # Python scripts for data processing, modeling, and evaluation
+│   └── data_processor.py          # Script for loading data and preparing it for feed the model
+├── .gitignore                     # Specifies intentionally untracked files to ignore
+├── EDA.ipynb                      # Exploratory Data Analysis notebook
+├── LICENSE                        # Project license file
+├── Model_Design.ipynb             # Notebook for model design and experimentation
+├── new_or_used.py                 # Contains the build_dataset function
+├── Opportunities@MeLi - CodeExercise DS_ML.docx # Project documentation in Word format
+├── pairplot.png                   # Image of pairplot
+├── README.md                      # This file
+├── documentation_report.pdf       # Documentation
+└── requirements.txt               # Lists all Python dependencies
 
 ---
 
