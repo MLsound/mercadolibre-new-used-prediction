@@ -11,3 +11,4 @@ __pycache__/
 .DS_Store
 ~$portunities@MeLi - CodeExercise DS_ML.docx
 *.png
+models/rndforest_model.joblib
