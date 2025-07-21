@@ -237,7 +237,7 @@ def load_processed_data():
     #     'is_USD', 'free_tier', 'buying_mode_buy_it_now',
     #     'buying_mode_classified','is_weekend','is_working_hours'] + cat_quant  # 'is_single_unit'
     
-    # 7️⃣ Seventh model trained (synth features)
+    # 7️⃣ Seventh & 8️⃣ Eigth model trained (synth features)
     features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
         'is_USD', 'free_tier', 'buying_mode_buy_it_now',
         'buying_mode_classified','is_weekend','is_working_hours',
