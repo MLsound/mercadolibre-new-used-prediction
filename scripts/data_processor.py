@@ -207,6 +207,9 @@ def load_processed_data():
     q3_price = X_train_df['price'].quantile(0.75) # Use the 75th percentile (Q3) as threshold
     X_train_transformed_df['high_ticket'] = X_train_transformed_df['price'] > q3_price
     X_test_transformed_df['high_ticket'] = X_test_transformed_df['price'] > q3_price
+    # 'stop_time' - 'start_time' -> 'duration'
+    X_test_transformed_df['duration'] = X_test_transformed_df['stop_time'] - X_test_transformed_df['start_time']
+    X_train_transformed_df['duration'] = X_train_transformed_df['stop_time'] - X_train_transformed_df['start_time']
 
     # 7. Feature selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # 1️⃣ First model trained
@@ -238,11 +241,25 @@ def load_processed_data():
     #     'buying_mode_classified','is_weekend','is_working_hours'] + cat_quant  # 'is_single_unit'
     
     # 7️⃣ Seventh & 8️⃣ Eigth model trained (synth features)
-    features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
-        'is_USD', 'free_tier', 'buying_mode_buy_it_now',
-        'buying_mode_classified','is_weekend','is_working_hours',
-        'has_parent_item','has_store','high_ticket'] + cat_quant  # 'is_single_unit'
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
+    #     'is_USD', 'free_tier', 'buying_mode_buy_it_now',
+    #     'buying_mode_classified','is_weekend','is_working_hours',
+    #     'has_parent_item','has_store','high_ticket'] + cat_quant  # 'is_single_unit'
 
+    # 1️⃣1️⃣ Eleventh model trained (chi-cuadrado + RFE)
+    # features = ['price', 'accepts_mercadopago','automatic_relist','stop_time','initial_quantity',
+    #             'start_time','price_scaled','is_USD','listing_type_id_free','listing_type_id_gold',
+    #             'listing_type_id_gold_premium','listing_type_id_gold_pro','listing_type_id_gold_special',
+    #             'listing_type_id_silver','is_weekend','is_working_hours','quant_single_unit',
+    #             'buying_mode_buy_it_now','buying_mode_classified','free_tier','time_created','day_of_week',
+    #             'quant_small','has_parent_item','has_store','high_ticket','duration','is_single_unit',
+    #             'status_not_yet_active', 'status_paused']
+
+    # 1️⃣2️⃣ Twelveth model trained (new selection)
+    features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled', 'free_tier', 
+        'buying_mode_buy_it_now', 'buying_mode_classified', 'duration','high_ticket',
+        'has_parent_item'] + cat_quant
+    
     features_train = X_train_transformed_df[features].copy()
     target_train = y_train_df.copy()
     features_test = X_test_transformed_df[features].copy()
