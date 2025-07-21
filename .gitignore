@@ -9,6 +9,6 @@ __pycache__/
 
 # OS files
 .DS_Store
-~$portunities@MeLi - CodeExercise DS_ML.docx
+#~$portunities@MeLi - CodeExercise DS_ML.docx
 *.png
 models/rndforest_model.joblib
