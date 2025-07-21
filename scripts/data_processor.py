@@ -211,6 +211,42 @@ def load_processed_data():
     X_test_transformed_df['duration'] = X_test_transformed_df['stop_time'] - X_test_transformed_df['start_time']
     X_train_transformed_df['duration'] = X_train_transformed_df['stop_time'] - X_train_transformed_df['start_time']
 
+    # 1️⃣3️⃣ Thirteenth model trained (tag features -> categorical)
+    # 'tags' -> 'tag_…'
+    # Flatten all tag lists and get unique tag values
+    unique_tags = set(tag for tags_list in X_test_transformed_df['tags'] for tag in tags_list)
+    X_train_transformed_df['tags'] = X_train_transformed_df['tags'].apply(lambda x: x if isinstance(x, list) else [])
+    X_test_transformed_df['tags'] = X_test_transformed_df['tags'].apply(lambda x: x if isinstance(x, list) else [])
+    # Create new features for each unique tag
+    for tag in unique_tags:
+        X_train_transformed_df[f'tag_{tag}'] = X_train_transformed_df['tags'].apply(lambda x: 1 if tag in x else 0)
+        X_test_transformed_df[f'tag_{tag}'] = X_test_transformed_df['tags'].apply(lambda x: 1 if tag in x else 0)
+        
+    # 'shipping' -> 'local_pick_up' and 'free_shipping'
+    # Function to safely extract values
+    def get_shipping_feature(shipping_list, feature_name):
+        # Check if the entry is a list and not empty
+        if isinstance(shipping_list, list) and len(shipping_list) > 0:
+            # Check if the first element is a dictionary and contains the key
+            if isinstance(shipping_list[0], dict) and feature_name in shipping_list[0]:
+                return shipping_list[0][feature_name]
+        # Return NaN or a default value if conditions are not met
+        return 0
+
+    # Apply the safe extraction function
+    X_train_transformed_df['local_pick_up'] = X_train_transformed_df['shipping'].apply(lambda x: get_shipping_feature(x, 'local_pick_up'))
+    X_train_transformed_df['free_shipping'] = X_train_transformed_df['shipping'].apply(lambda x: get_shipping_feature(x, 'free_shipping'))
+    X_test_transformed_df['local_pick_up'] = X_test_transformed_df['shipping'].apply(lambda x: get_shipping_feature(x, 'local_pick_up'))
+    X_test_transformed_df['free_shipping'] = X_test_transformed_df['shipping'].apply(lambda x: get_shipping_feature(x, 'free_shipping'))
+    # Convert boolean values to integers (0 or 1), handling NaNs if necessary
+    X_train_transformed_df['local_pick_up'] = X_train_transformed_df['local_pick_up'].fillna(0).astype(int)
+    X_train_transformed_df['free_shipping'] = X_train_transformed_df['free_shipping'].fillna(0).astype(int)
+    X_test_transformed_df['local_pick_up'] = X_test_transformed_df['local_pick_up'].fillna(0).astype(int)
+    X_test_transformed_df['free_shipping'] = X_test_transformed_df['free_shipping'].fillna(0).astype(int)
+
+    tag_features = ['tag_good_quality_thumbnail', 'tag_poor_quality_thumbnail', 'tag_free_relist', 
+       'tag_dragged_visits', 'tag_dragged_bids_and_visits', 'local_pick_up', 'free_shipping']
+
     # 7. Feature selection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # 1️⃣ First model trained
     # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled',
@@ -256,9 +292,14 @@ def load_processed_data():
     #             'status_not_yet_active', 'status_paused']
 
     # 1️⃣2️⃣ Twelveth model trained (new selection)
+    # features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled', 'free_tier', 
+    #     'buying_mode_buy_it_now', 'buying_mode_classified', 'duration','high_ticket',
+    #     'has_parent_item'] + cat_quant + tag_features
+    
+    # 1️⃣3️⃣ Twelveth model trained (tag features -> categorical)
     features = ['accepts_mercadopago', 'automatic_relist', 'price_scaled', 'free_tier', 
-        'buying_mode_buy_it_now', 'buying_mode_classified', 'duration','high_ticket',
-        'has_parent_item'] + cat_quant
+        'buying_mode_buy_it_now', 'buying_mode_classified', 'duration', 'quant_single_unit',
+        'has_parent_item'] + tag_features
     
     features_train = X_train_transformed_df[features].copy()
     target_train = y_train_df.copy()
