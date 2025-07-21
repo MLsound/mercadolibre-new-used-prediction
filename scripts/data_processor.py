@@ -257,7 +257,7 @@ def load_processed_data():
     print("Succesfully finished.\n")
 
     #return features_train, target_train, features_test, target_test
-    return features_train, target_train, features_test, target_test
+    return features_train, target_train_encoded, features_test, target_test_encoded
 
 
 
