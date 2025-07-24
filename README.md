@@ -23,11 +23,9 @@ The dataset used for this project is `MLA_100k_checked_v3.jsonlines`. A helper f
 
 The core of the solution lies in the scripts and/or runnable notebooks that define, train, and evaluate the machine learning model. These files are designed for reproducibility and legibility, adhering to collaborative development best practices.
 
-* **`main.py`** (or similar, e.g., `model_training.ipynb`): Contains the primary code for:
-    * Data loading and preprocessing.
-    * Feature engineering.
-    * Model definition and training.
-    * Model evaluation on the test set.
+* **`Model_Design.ipynb`**: This notebook serves as the primary location for model definition, training, and evaluation on the test set. It encapsulates the iterative process of model development.
+* **`data_processor.py`**: This script is responsible for data loading, preprocessing, and potentially feature engineering, preparing the data for model consumption.
+* **`new_or_used.py`**: Contains the `build_dataset` function, a helper function for reading and initially processing the raw data.
 
 ---
 
@@ -35,13 +33,13 @@ The core of the solution lies in the scripts and/or runnable notebooks that defi
 
 A comprehensive document explaining the methodology, choices, and results.
 
-* **`report.pdf`**:
+* **`documentation_report.pdf`**:
     * **Feature Selection Criteria**: Detailed explanation of the features chosen for the model and the rationale behind their selection.
     * **Secondary Metric**:
         * Identification of an appropriate secondary evaluation metric.
         * Justification for choosing this metric, highlighting its relevance to the problem.
         * Performance achieved on this secondary metric.
-    * **EDA Analysis**: An exploratory data analysis (EDA) can be provided in an alternative format (e.g., `eda.ipynb`) to further illustrate data insights.
+* **`EDA.ipynb`**: An exploratory data analysis (EDA) notebook to further illustrate data insights, including data understanding, distribution analysis, and initial feature insights.
 
 ---
 
