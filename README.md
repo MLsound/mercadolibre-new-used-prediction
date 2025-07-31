@@ -75,7 +75,8 @@ To run this project, ensure you have the following installed:
     
 ---
 
-5. Project Structure
+## 5. Project Structure
+```
 .
 ├── .venv/                         # Python virtual environment
 ├── data/                          # Raw and processed datasets
@@ -93,8 +94,8 @@ To run this project, ensure you have the following installed:
 ├── README.md                      # This file
 ├── documentation_report.pdf       # Documentation
 └── requirements.txt               # Lists all Python dependencies
-
+```
 ---
 
-6. License
+## 6. License
 This project is licensed under the MIT License - see the LICENSE file for details.
